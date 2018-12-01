@@ -1,7 +1,8 @@
 package no.quist.aoc18
 
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.system.measureTimeMillis
 
 abstract class Day<I, R> {
@@ -26,20 +27,14 @@ abstract class Day<I, R> {
     }
 
     fun solve() = runBlocking {
-        val result1 = async { solveTaskTimed(::task1) }
-        val result2 = async { solveTaskTimed(::task2) }
-        println("""
-            $className
-                Task 1
-                    Result: ${result1.await().second}
-                    Time: ${result1.await().first}ms
-                Task 2
-                    Result: ${result2.await().second}
-                    Time: ${result2.await().first}ms
-        """.trimIndent())
+        launch { solveTaskTimed(::task1) }
+        launch { solveTaskTimed(::task2) }
+        println(className)
     }
 
-    private fun solveTaskTimed(taskRunner: (I) -> R): Pair<Long, String> {
+    private val taskCounter = AtomicInteger(1)
+
+    private fun solveTaskTimed(taskRunner: (I) -> R) {
         val input = this.input // Load outside timer
         var result = ""
         val time = measureTimeMillis {
@@ -50,6 +45,10 @@ abstract class Day<I, R> {
             }
         }
 
-        return time to result
+        println("""
+            |   Task ${taskCounter.getAndIncrement()}
+            |       Result: $result
+            |       Time: ${time}ms
+        """.trimMargin())
     }
 }
