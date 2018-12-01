@@ -1,5 +1,7 @@
 package no.quist.aoc18
 
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import kotlin.system.measureTimeMillis
 
 abstract class Day<I, R> {
@@ -9,29 +11,31 @@ abstract class Day<I, R> {
 
     private val input: I by lazy { createInput() }
 
+    private val className = javaClass.simpleName
+
     val inputLines: List<String> by lazy {
         try {
-            javaClass.getResource("/${javaClass.simpleName}.txt")
+            javaClass.getResource("/$className.txt")
                 .readText()
                 .split("\r\n")
                 .filter { it.isNotBlank() }
         } catch (ex: Exception) {
-            println("Missing ${javaClass.simpleName}.txt in resources folder")
+            println("Missing $className.txt in resources folder")
             emptyList<String>()
         }
     }
 
-    fun solve() {
-        val (time1, result1) = solveTaskTimed(::task1)
-        val (time2, result2) = solveTaskTimed(::task2)
+    fun solve() = runBlocking {
+        val result1 = async { solveTaskTimed(::task1) }
+        val result2 = async { solveTaskTimed(::task2) }
         println("""
-            ${javaClass.simpleName}
+            $className
                 Task 1
-                    Result: $result1
-                    Time: ${time1}ms
+                    Result: ${result1.await().second}
+                    Time: ${result1.await().first}ms
                 Task 2
-                    Result: $result2
-                    Time: ${time2}ms
+                    Result: ${result2.await().second}
+                    Time: ${result2.await().first}ms
         """.trimIndent())
     }
 
