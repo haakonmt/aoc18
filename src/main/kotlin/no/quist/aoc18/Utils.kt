@@ -9,7 +9,7 @@ object Utils {
             .split("\r\n")
             .filter { it.isNotBlank() }
     } catch (ex: Exception) {
-        println(ex.message)
+        println("Missing $className.txt in resources folder")
         emptyList<String>()
     }
 
