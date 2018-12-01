@@ -3,7 +3,7 @@ package no.quist.aoc18.days
 import no.quist.aoc18.Day
 
 object Day1 : Day<List<Int>, Int>() {
-    override fun createInput(): List<Int> = lines.map { it.toInt() }
+    override fun createInput(): List<Int> = inputLines.map { it.toInt() }
 
     override fun task1(input: List<Int>) = input.sum()
 
