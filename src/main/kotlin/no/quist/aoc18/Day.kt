@@ -1,14 +1,14 @@
 package no.quist.aoc18
 
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
-import java.util.concurrent.atomic.AtomicInteger
 import kotlin.system.measureTimeMillis
 
-abstract class Day<I, R> {
+abstract class Day<I, R : Any> {
     abstract fun createInput(): I
-    abstract fun task1(input: I): R
-    abstract fun task2(input: I): R
+    abstract fun part1(input: I): R
+    abstract fun part2(input: I): R
 
     private val input: I by lazy { createInput() }
 
@@ -26,29 +26,23 @@ abstract class Day<I, R> {
         }
     }
 
-    fun solve() = runBlocking {
-        launch { solveTaskTimed(::task1) }
-        launch { solveTaskTimed(::task2) }
-        println(className)
+    fun solveAndPrint() = runBlocking {
+        listOf(::part1, ::part2)
+            .mapIndexed { i, it -> GlobalScope.async { solvePartTimed(i + 1, it) } }
+            .forEach { println(it.await()) }
     }
 
-    private val taskCounter = AtomicInteger(1)
-
-    private fun solveTaskTimed(taskRunner: (I) -> R) {
+    private fun solvePartTimed(partIndex: Int, solver: (I) -> R): PartResult {
         val input = this.input // Load outside timer
-        var result = ""
+        var result: Any = ""
         val time = measureTimeMillis {
             result = try {
-                taskRunner(input).toString()
+                solver(input)
             } catch (err: NotImplementedError) {
                 "NOT IMPLEMENTED"
             }
         }
 
-        println("""
-            |   Task ${taskCounter.getAndIncrement()}
-            |       Result: $result
-            |       Time: ${time}ms
-        """.trimMargin())
+        return PartResult(className, partIndex, result, time)
     }
 }

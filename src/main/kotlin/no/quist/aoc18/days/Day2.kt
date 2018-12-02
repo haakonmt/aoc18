@@ -5,7 +5,7 @@ import no.quist.aoc18.Day
 object Day2 : Day<List<String>, Any>() {
     override fun createInput(): List<String> = inputLines
 
-    override fun task1(input: List<String>): Int {
+    override fun part1(input: List<String>): Int {
         val (twos, threes) = input.fold(Pair(0, 0)) { (accTwos, accThrees), currentLine ->
             val charCount = currentLine.map { c -> currentLine.count { it == c } }
 
@@ -17,7 +17,7 @@ object Day2 : Day<List<String>, Any>() {
         return twos * threes
     }
 
-    override fun task2(input: List<String>): String {
+    override fun part2(input: List<String>): String {
         input.forEach { first ->
             input.forEach { second ->
                 val (diffCount, commonChars) = first.foldIndexed(Pair(0, "")) { i, (accDiff, accCommon), c ->
