@@ -8,10 +8,10 @@ import no.quist.aoc18.days.Day2
 import no.quist.aoc18.days.Day3
 import java.time.LocalDate
 
-val days = listOf(Day1, Day2)
+val days = listOf(Day1, Day2, Day3)
 
 fun main() {
-    runSpecifiedDay(Day3)
+    runAllDays()
 }
 
 @Suppress("UNUSED")
