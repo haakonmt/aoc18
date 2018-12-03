@@ -4,12 +4,8 @@ import no.quist.aoc18.Day
 
 object Day3 : Day<List<Rectangle>, Any>() {
     override fun createInput(): List<Rectangle> = inputLines.map { line ->
-        val (rawId, parts) = line.split(" @ ")
-        val id = rawId.drop(1)
-        val (coordinates, size) = parts.split(": ")
-        val (x, y) = coordinates.split(",").map { it.toInt() }
-        val (width, height) = size.split("x").map { it.toInt() }
-        Rectangle(id, x, y, width, height)
+        val (id, x, y, width, height) = line groupBy Regex("""#(\d*) @ (\d*),(\d*): (\d*)x(\d*)""")
+        Rectangle(id, x.toInt(), y.toInt(), width.toInt(), height.toInt())
     }
 
     override fun part1(input: List<Rectangle>): Int {

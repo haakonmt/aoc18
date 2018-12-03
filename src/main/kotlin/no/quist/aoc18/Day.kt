@@ -26,6 +26,8 @@ abstract class Day<I, R : Any> {
         }
     }
 
+    infix fun String.groupBy(regex: Regex) = regex.find(this)!!.destructured
+
     fun solveAndPrint() = runBlocking {
         listOf(::part1, ::part2)
             .mapIndexed { i, it -> GlobalScope.async { solvePartTimed(i + 1, it) } }
