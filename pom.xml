@@ -5,7 +5,7 @@
 
     <groupId>no.quist</groupId>
     <artifactId>aoc18</artifactId>
-    <version>0.2.1</version>
+    <version>0.3.0</version>
     <packaging>jar</packaging>
 
     <name>Advent of Code 2018 solutions</name>
