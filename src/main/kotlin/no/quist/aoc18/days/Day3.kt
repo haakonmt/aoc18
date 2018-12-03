@@ -13,14 +13,14 @@ object Day3 : Day<List<Rectangle>, Any>() {
     }
 
     override fun part1(input: List<Rectangle>): Int {
-        val covered = foldRectangles(mutableMapOf(), 0, input) { _, i ->
+        val covered = input.foldToMap(0) { _, i ->
             i + 1
         }
         return covered.values.count { it >= 2 }
     }
 
     override fun part2(input: List<Rectangle>): String {
-        val covered = foldRectangles(mutableMapOf(), mutableListOf<String>(), input) { (id), list ->
+        val covered = input.foldToMap(mutableListOf<String>()) { (id), list ->
             (list + id).toMutableList()
         }
         return input.find { r ->
@@ -28,12 +28,11 @@ object Day3 : Day<List<Rectangle>, Any>() {
         }!!.id
     }
 
-    private fun <T> foldRectangles(initialValue: MutableMap<String, T>, defaultValue: T, input: List<Rectangle>, addValue: (Rectangle, T) -> T) : MutableMap<String, T> =
-        input.fold(initialValue) { acc, r ->
+    private fun <T> List<Rectangle>.foldToMap(defaultValue: T, addValue: (Rectangle, T) -> T) : MutableMap<String, T> =
+        fold(mutableMapOf()) { acc, r ->
             (r.x..(r.x + r.width - 1)).forEach { x ->
                 (r.y..(r.y + r.height - 1)).forEach { y ->
-                    val value = (acc["$x,$y"] ?: defaultValue)
-                    acc["$x,$y"] = addValue(r, value)
+                    acc["$x,$y"] = addValue(r, (acc["$x,$y"] ?: defaultValue))
                 }
             }
             acc
